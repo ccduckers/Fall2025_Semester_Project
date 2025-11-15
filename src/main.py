@@ -1,8 +1,8 @@
-"""Entry point for the Employee Training Application."""
+"""Entry point for the Tutoring Matchmaker."""
 
 import json
 from argparse import ArgumentParser
-from application_name.presentation_layer.user_interface import UserInterface
+from TutorMatchmaker.presentation_layer.user_interface import UserInterface
 
 
 

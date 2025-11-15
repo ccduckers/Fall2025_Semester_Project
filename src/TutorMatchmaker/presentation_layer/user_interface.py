@@ -1,0 +1,35 @@
+"""Implements the applicatin user interface."""
+
+from prettytable import PrettyTable;
+from TutorMatchmaker.application_base import ApplicationBase
+from TutorMatchmaker.service_layer.app_services import AppServices
+import inspect
+import json
+
+class UserInterface(ApplicationBase):
+    """UserInterface Class Definition."""
+    def __init__(self, config:dict)->None:
+        """Initializes object. """
+        self._config_dict = config
+        self.META = config["meta"]
+        super().__init__(subclass_name=self.__class__.__name__, 
+				   logfile_prefix_name=self.META["log_prefix"])
+        self.DB = AppServices(config)
+        self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}:It works!')
+
+
+
+
+    def start(self):
+        """Start main user interface."""
+        self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User interface started!')
+        userin = input("Enter a command option: \n\t1) View Tutors 2) Exit \n")
+        match userin:
+            case "1":
+                self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User selected option 1')
+                results = self.DB.get_all_tutors()
+                table = PrettyTable()
+                table.field_names = ["idTutors"]
+                for row in results:
+                    table.add_row(row)
+                print(table)

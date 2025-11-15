@@ -1,0 +1,24 @@
+{
+	"meta":{
+		"version": "v1",
+		"app_name": "Tutor_Matchmaker",
+		"log_prefix": "TutorMatchmaker"
+	},
+	"database":{
+		"pool":{
+			"name": "tutormatchmaker_db_bool",
+			"size": 10,
+			"reset_session": true,
+			"use_pure": true
+		},
+		"connection":{
+			"config":{
+				"database": "StudentTutoringMatchmaker",
+				"user": "root",
+				"password": "yellow",
+				"host": "localhost",
+				"port": 3306
+			}
+		}
+	}
+}
