@@ -24,7 +24,7 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self.DATABASE["connection"]["config"]["database"]
 		self.DB_CONFIG['user'] = self.DATABASE["connection"]["config"]["user"]
 		self.DB_CONFIG['host'] = self.DATABASE["connection"]["config"]["host"]
-		self.DB_CONFIG['password'] = self.DATABASE["connection"]["config"]["host"]
+		self.DB_CONFIG['password'] = self.DATABASE["connection"]["config"]["password"]
 		self.DB_CONFIG['port'] = self.DATABASE["connection"]["config"]["port"]
 
 		self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: DB Connection Config Dict: {self.DB_CONFIG}')
@@ -35,12 +35,15 @@ class MySQLPersistenceWrapper(ApplicationBase):
 		
 
 		# SQL String Constants
+		self.INSERT_TUTOR = f'INSERT INTO Tutor(FirstName, LastName) VALUES (%s, %s);'
+		self.DELETE_TUTOR = f'DELETE FROM Tutor WHERE idTutors = %s;'
+
 
     # SQL String Constants -- These are used by the methods below to execute queries and operations and protect against SQL attacks.
         # READ Statements
 
 		self.SELECT_ALL_SUBJECTS = f"SELECT idSubject FROM `Subject`;"
-		self.SELECT_ALL_TUTORS = f"SELECT idTutors FROM `Tutor`;"
+		self.SELECT_ALL_TUTORS = f"SELECT idTutors, firstname, lastname FROM `Tutor`;"
         
 		
 
@@ -54,8 +57,46 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Running query: {self.SELECT_ALL_TUTORS}')
 			connection = self._connection_pool.get_connection()
 			db_cursor = connection.cursor(dictionary=False)
-			db_cursor.execute(query, params or ())
+			db_cursor.execute(self.SELECT_ALL_TUTORS, )
 			results = db_cursor.fetchall()
+			db_cursor.close()
+			connection.close()
+			return results
+		except connector.Error as err:
+			self._logger.log_error(f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}')
+			return []
+		except Exception as e:
+			self._logger.log_error(f'{inspect.currentframe().f_code.co_name}: General error: {e}')
+			return []
+		
+	def inserttutor(self, firstname, lastname):
+		self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Inserting a tutor')
+		try:
+			self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Running query: {self.INSERT_TUTOR}')
+			connection = self._connection_pool.get_connection()
+			db_cursor = connection.cursor(dictionary=False)
+			db_cursor.execute(self.INSERT_TUTOR,(firstname, lastname) )
+			results = db_cursor.rowcount
+			connection.commit()
+			db_cursor.close()
+			connection.close()
+			return results
+		except connector.Error as err:
+			self._logger.log_error(f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}')
+			return []
+		except Exception as e:
+			self._logger.log_error(f'{inspect.currentframe().f_code.co_name}: General error: {e}')
+			return []
+		
+	def deletetutor(self, idTutor):
+		self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Deleting a tutor')
+		try:
+			self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Running query: {self.DELETE_TUTOR}')
+			connection = self._connection_pool.get_connection()
+			db_cursor = connection.cursor(dictionary=False)
+			db_cursor.execute(self.DELETE_TUTOR,(idTutor,) )
+			results = db_cursor.rowcount
+			connection.commit()
 			db_cursor.close()
 			connection.close()
 			return results

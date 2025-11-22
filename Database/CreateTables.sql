@@ -1,18 +1,3 @@
--- MySQL Workbench Forward Engineering
-
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-
--- -----------------------------------------------------
--- Schema StudenTutoringMatchmaker
--- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `StudenTutoringMatchmaker` ;
-
--- -----------------------------------------------------
--- Schema StudenTutoringMatchmaker
--- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `StudenTutoringMatchmaker` DEFAULT CHARACTER SET utf8 ;
 USE `StudenTutoringMatchmaker` ;
 
 -- -----------------------------------------------------
@@ -60,24 +45,3 @@ CREATE TABLE IF NOT EXISTS `StudenTutoringMatchmaker`.`Subject_has_Tutors` (
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
-
--- DATA INSERT
-
-INSERT INTO Subject (Subject) VALUES ("Math");
-INSERT INTO Subject (Subject) VALUES ("English");
-INSERT INTO Subject (Subject) VALUES ("Science");
-INSERT INTO Tutor(FirstName, LastName) VALUES ("John","Doe");
-INSERT INTO Tutor(FirstName, LastName) VALUES ("Jane","Smith");
-INSERT INTO Tutor(FirstName, LastName) VALUES ("Mike","Thomas");
-INSERT INTO Subject_has_Tutors(idSubject, idTutors) VALUES (1,1);
-INSERT INTO Subject_has_Tutors(idSubject, idTutors) VALUES (1,2);
-INSERT INTO Subject_has_Tutors(idSubject, idTutors) VALUES (2,2);
-INSERT INTO Subject_has_Tutors(idSubject, idTutors) VALUES (2,3);
-INSERT INTO Subject_HAs_Tutors(idSubject, idTutors) VALUES (3,3);
-SELECT * FROM `Subject_HAs_Tutors`;

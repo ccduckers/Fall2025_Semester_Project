@@ -23,13 +23,23 @@ class UserInterface(ApplicationBase):
     def start(self):
         """Start main user interface."""
         self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User interface started!')
-        userin = input("Enter a command option: \n\t1) View Tutors 2) Exit \n")
-        match userin:
-            case "1":
-                self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User selected option 1')
-                results = self.DB.get_all_tutors()
-                table = PrettyTable()
-                table.field_names = ["idTutors"]
-                for row in results:
-                    table.add_row(row)
-                print(table)
+        while True:
+            userin = input("Enter a command option: \n\t1) View Tutors 2) Add Tutor 3) Delete Tutor 9) Exit \n")
+            match userin:
+                case "1":
+                    self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User selected option 1')
+                    results = self.DB.get_all_tutors()
+                    table = PrettyTable()
+                    table.field_names = ["Tutor ID","First Name","Last Name"]
+                    for row in results:
+                        table.add_row(row)
+                    print(table)
+                case "2":
+                    addFname = input("Enter a First name: ")
+                    addLname = input("Enter a Last name: ")
+                    results=self.DB.insert_tutor(addFname, addLname)
+                case "3":
+                    deleteID = input("Enter ID to delete")
+                    results=self.DB.delete_tutor(deleteID)
+                case "9":
+                    break

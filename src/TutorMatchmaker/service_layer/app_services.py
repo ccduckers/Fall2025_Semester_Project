@@ -20,3 +20,13 @@ class AppServices(ApplicationBase):
         self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Getting all tutors.')
         results = self.DB.getalltutors()
         return results
+    
+    def insert_tutor(self, firstname, lastname)->list:
+        self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Inserting tutor {firstname} {lastname}.')
+        results = self.DB.inserttutor(firstname, lastname)
+        return results
+    
+    def delete_tutor(self, idTutor)->list:
+        self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Deleting tutor.')
+        results = self.DB.deletetutor(idTutor)
+        return results
