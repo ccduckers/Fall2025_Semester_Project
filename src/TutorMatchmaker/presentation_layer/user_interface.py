@@ -24,7 +24,7 @@ class UserInterface(ApplicationBase):
         """Start main user interface."""
         self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User interface started!')
         while True:
-            userin = input("Enter a command option: \n\t1) View Tutors 2) Add Tutor 3) Delete Tutor 4) View Subject 5) Add Subject 6) Delete Subject 9) Exit \n")
+            userin = input("Enter a command option: \n\t1) View Tutors \n\t2) Add Tutor \n\t3) Delete Tutor \n\t4) View Subject \n\t5) Add Subject \n\t6) Delete Subject \n\t9) Exit \n")
             match userin:
                 case "1":
                     self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User selected option 1')
