@@ -24,7 +24,7 @@ class UserInterface(ApplicationBase):
         """Start main user interface."""
         self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User interface started!')
         while True:
-            userin = input("Enter a command option: \n\t1) View Tutors 2) Add Tutor 3) Delete Tutor 4) View Subject 9) Exit \n")
+            userin = input("Enter a command option: \n\t1) View Tutors 2) Add Tutor 3) Delete Tutor 4) View Subject 5) Add Subject 9) Exit \n")
             match userin:
                 case "1":
                     self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User selected option 1')
@@ -49,5 +49,12 @@ class UserInterface(ApplicationBase):
                     for row in results:
                         table.add_row(row)
                     print(table)
+                case "5":
+                    self._logger.log_debug(
+                        f'{inspect.currentframe().f_code.co_name}: User selected option 5 (Add Subject)'
+                    )
+                    subject_name = input("Enter a subject name: ")
+                    results = self.DB.insert_subject(subject_name)
+                    print(f"Inserted {results} subject record(s).")
                 case "9":
                     break

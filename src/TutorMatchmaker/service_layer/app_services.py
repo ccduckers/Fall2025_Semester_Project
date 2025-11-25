@@ -39,3 +39,12 @@ class AppServices(ApplicationBase):
         self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Deleting tutor.')
         results = self.DB.deletetutor(idTutor)
         return results
+    
+    def insert_subject(self, subject_name) -> list:
+        """Insert a new subject."""
+        self._logger.log_debug(
+            f'{inspect.currentframe().f_code.co_name}: Inserting subject {subject_name}.'
+        )
+        results = self.DB.insertsubject(subject_name)
+        return results
+

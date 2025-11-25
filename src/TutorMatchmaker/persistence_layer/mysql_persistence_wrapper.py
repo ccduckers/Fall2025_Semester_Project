@@ -38,6 +38,9 @@ class MySQLPersistenceWrapper(ApplicationBase):
 		self.INSERT_TUTOR = f'INSERT INTO Tutor(FirstName, LastName) VALUES (%s, %s);'
 		self.DELETE_TUTOR = f'DELETE FROM Tutor WHERE idTutors = %s;'
 
+		self.INSERT_SUBJECT = f'INSERT INTO Subject(Subject) VALUES (%s);'
+
+
 
     # SQL String Constants -- These are used by the methods below to execute queries and operations and protect against SQL attacks.
         # READ Statements
@@ -132,6 +135,34 @@ class MySQLPersistenceWrapper(ApplicationBase):
 		except Exception as e:
 			self._logger.log_error(f'{inspect.currentframe().f_code.co_name}: General error: {e}')
 			return []
+
+	def insertsubject(self, subject_name):
+		"""Insert a new subject."""
+		self._logger.log_debug(
+            f'{inspect.currentframe().f_code.co_name}: Inserting a subject'
+		)
+		try:
+			self._logger.log_debug(
+                f'{inspect.currentframe().f_code.co_name}: Running query: {self.INSERT_SUBJECT}'
+            )
+			connection = self._connection_pool.get_connection()
+			db_cursor = connection.cursor(dictionary=False)
+			db_cursor.execute(self.INSERT_SUBJECT, (subject_name,))
+			results = db_cursor.rowcount
+			connection.commit()
+			db_cursor.close()
+			connection.close()
+			return results
+		except connector.Error as err:
+			self._logger.log_error(
+                f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
+            )
+			return
+		except Exception as e:
+			self._logger.log_error(
+                f'{inspect.currentframe().f_code.co_name}: General error: {e}'
+            )
+			return
 
 
 
