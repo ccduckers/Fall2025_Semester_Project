@@ -39,6 +39,8 @@ class MySQLPersistenceWrapper(ApplicationBase):
 		self.DELETE_TUTOR = f'DELETE FROM Tutor WHERE idTutors = %s;'
 
 		self.INSERT_SUBJECT = f'INSERT INTO Subject(Subject) VALUES (%s);'
+		self.DELETE_SUBJECT = f'DELETE FROM Subject WHERE idSubject = %s;'
+
 
 
 
@@ -163,6 +165,35 @@ class MySQLPersistenceWrapper(ApplicationBase):
                 f'{inspect.currentframe().f_code.co_name}: General error: {e}'
             )
 			return
+		
+	def deletesubject(self, subject_id):
+		"""Delete a subject by id."""
+		self._logger.log_debug(
+            f'{inspect.currentframe().f_code.co_name}: Deleting subject {subject_id}'
+        )
+		try:
+			self._logger.log_debug(
+                f'{inspect.currentframe().f_code.co_name}: Running query: {self.DELETE_SUBJECT}'
+            )
+			connection = self._connection_pool.get_connection()
+			db_cursor = connection.cursor(dictionary=False)
+			db_cursor.execute(self.DELETE_SUBJECT, (subject_id,))
+			results = db_cursor.rowcount
+			connection.commit()
+			db_cursor.close()
+			connection.close()
+			return results
+		except connector.Error as err:
+			self._logger.log_error(
+                f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
+            )
+			return
+		except Exception as e:
+			self._logger.log_error(
+                f'{inspect.currentframe().f_code.co_name}: General error: {e}'
+            )
+			return 
+
 
 
 

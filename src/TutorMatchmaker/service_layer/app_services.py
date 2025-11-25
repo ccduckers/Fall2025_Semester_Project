@@ -47,4 +47,13 @@ class AppServices(ApplicationBase):
         )
         results = self.DB.insertsubject(subject_name)
         return results
+    
+    def delete_subject(self, subject_id) -> list:
+        """Delete a subject by id."""
+        self._logger.log_debug(
+            f'{inspect.currentframe().f_code.co_name}: Deleting subject {subject_id}.'
+        )
+        results = self.DB.deletesubject(subject_id)
+        return results
+
 
