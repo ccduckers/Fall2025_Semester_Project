@@ -24,13 +24,13 @@ class UserInterface(ApplicationBase):
         """Start main user interface."""
         self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User interface started!')
         while True:
-            userin = input("Enter a command option: \n\t1) View Tutors 2) Add Tutor 3) Delete Tutor 9) Exit \n")
+            userin = input("Enter a command option: \n\t1) View Tutors 2) Add Tutor 3) Delete Tutor 4) View Subject 9) Exit \n")
             match userin:
                 case "1":
                     self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User selected option 1')
                     results = self.DB.get_all_tutors()
                     table = PrettyTable()
-                    table.field_names = ["Tutor ID","First Name","Last Name"]
+                    table.field_names = ["Tutor ID","First Name","Last Name",]
                     for row in results:
                         table.add_row(row)
                     print(table)
@@ -41,5 +41,13 @@ class UserInterface(ApplicationBase):
                 case "3":
                     deleteID = input("Enter ID to delete")
                     results=self.DB.delete_tutor(deleteID)
+                case "4":
+                    self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User selected option 4 (View Subjects)')
+                    results = self.DB.get_all_subjects()
+                    table = PrettyTable()
+                    table.field_names = ["Subject ID", "Subject"]
+                    for row in results:
+                        table.add_row(row)
+                    print(table)
                 case "9":
                     break

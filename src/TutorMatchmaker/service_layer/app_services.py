@@ -15,6 +15,15 @@ class AppServices(ApplicationBase):
         self.DB = MySQLPersistenceWrapper(config)
         self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}:It works!')
 
+    def get_all_subjects(self) -> list:
+        """Returns all subjects in the database."""
+        self._logger.log_debug(
+            f'{inspect.currentframe().f_code.co_name}: Getting all subjects.'
+        )
+        results = self.DB.getallsubjects()
+        return results
+
+    
     def get_all_tutors(self)->list:
         """Returns all tutors in the database."""
         self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Getting all tutors.')

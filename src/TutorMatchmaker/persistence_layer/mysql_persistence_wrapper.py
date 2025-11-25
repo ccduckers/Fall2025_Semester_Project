@@ -42,7 +42,7 @@ class MySQLPersistenceWrapper(ApplicationBase):
     # SQL String Constants -- These are used by the methods below to execute queries and operations and protect against SQL attacks.
         # READ Statements
 
-		self.SELECT_ALL_SUBJECTS = f"SELECT idSubject FROM `Subject`;"
+		self.SELECT_ALL_SUBJECTS = f"SELECT idSubject, Subject FROM `Subject`;"
 		self.SELECT_ALL_TUTORS = f"SELECT idTutors, firstname, lastname FROM `Tutor`;"
         
 		
@@ -68,6 +68,32 @@ class MySQLPersistenceWrapper(ApplicationBase):
 		except Exception as e:
 			self._logger.log_error(f'{inspect.currentframe().f_code.co_name}: General error: {e}')
 			return []
+	
+	def getallsubjects(self):
+		self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Getting all subjects')
+		try:
+			self._logger.log_debug(
+            	    f'{inspect.currentframe().f_code.co_name}: Running query: {self.SELECT_ALL_SUBJECTS}'
+            )
+			connection = self._connection_pool.get_connection()
+			db_cursor = connection.cursor(dictionary=False)
+			db_cursor.execute(self.SELECT_ALL_SUBJECTS)
+			results = db_cursor.fetchall()
+			db_cursor.close()
+			connection.close()
+			return results
+		except connector.Error as err:
+			self._logger.log_error(
+                f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
+            )
+			return 
+		except Exception as e:
+			self._logger.log_error(
+                f'{inspect.currentframe().f_code.co_name}: General error: {e}'
+            )
+			return
+
+		
 		
 	def inserttutor(self, firstname, lastname):
 		self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Inserting a tutor')
