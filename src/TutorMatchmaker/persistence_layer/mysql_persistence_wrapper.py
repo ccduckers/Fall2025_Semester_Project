@@ -43,6 +43,22 @@ class MySQLPersistenceWrapper(ApplicationBase):
 		self.INSERT_SUBJECT = f'INSERT INTO Subject(Subject) VALUES (%s);'
 		self.DELETE_SUBJECT = f'DELETE FROM Subject WHERE idSubject = %s;'
 
+		self.SELECT_SUBJECTS_FOR_TUTOR = """
+            SELECT s.idSubject, s.Subject
+            FROM Subject s
+            JOIN Subject_has_Tutors sht
+                ON s.idSubject = sht.idSubject
+            WHERE sht.idTutors = %s;
+        """
+		self.SELECT_TUTORS_FOR_SUBJECT = """
+            SELECT t.idTutors, t.FirstName, t.LastName
+            FROM Tutor t
+            JOIN Subject_has_Tutors sht
+                ON t.idTutors = sht.idTutors
+            WHERE sht.idSubject = %s;
+        """
+
+
 
 
 
@@ -218,6 +234,54 @@ class MySQLPersistenceWrapper(ApplicationBase):
                 f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
             )
 			return
+		except Exception as e:
+			self._logger.log_error(
+                f'{inspect.currentframe().f_code.co_name}: General error: {e}'
+            )
+			return
+		
+	def getsubjectsfortutor(self, tutor_id):
+		"""Return all subjects associated with a given tutor id."""
+		self._logger.log_debug(
+            f'{inspect.currentframe().f_code.co_name}: Getting subjects for tutor {tutor_id}'
+        )
+		try:
+			connection = self._connection_pool.get_connection()
+			db_cursor = connection.cursor(dictionary=False)
+			db_cursor.execute(self.SELECT_SUBJECTS_FOR_TUTOR, (tutor_id,))
+			results = db_cursor.fetchall()
+			db_cursor.close()
+			connection.close()
+			return results
+		except connector.Error as err:
+			self._logger.log_error(
+                f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
+            )
+			return 
+		except Exception as e:
+			self._logger.log_error(
+                f'{inspect.currentframe().f_code.co_name}: General error: {e}'
+            )
+			return
+		
+	def gettutorsforsubject(self, subject_id):
+		"""Return all tutors associated with a given subject id."""
+		self._logger.log_debug(
+            f'{inspect.currentframe().f_code.co_name}: Getting tutors for subject {subject_id}'
+        )
+		try:
+			connection = self._connection_pool.get_connection()
+			db_cursor = connection.cursor(dictionary=False)
+			db_cursor.execute(self.SELECT_TUTORS_FOR_SUBJECT, (subject_id,))
+			results = db_cursor.fetchall()
+			db_cursor.close()
+			connection.close()
+			return results
+		except connector.Error as err:
+			self._logger.log_error(
+                f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
+            )
+			return 
 		except Exception as e:
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: General error: {e}'

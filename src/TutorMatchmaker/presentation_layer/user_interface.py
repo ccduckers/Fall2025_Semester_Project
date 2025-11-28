@@ -25,7 +25,7 @@ class UserInterface(ApplicationBase):
         """Start main user interface."""
         self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User interface started!') # prints logs to the console
         while True:
-            userin = input("Enter a command option: \n\t1) View Tutors \n\t2) Add Tutor \n\t3) Delete Tutor \n\t4) View Subject \n\t5) Add Subject \n\t6) Delete Subject \n\t7) Link Tutor to Subject \n\t9) Exit \n")
+            userin = input("Enter a command option: \n\t1) View Tutors \n\t2) Add Tutor \n\t3) Delete Tutor \n\t4) View Subject \n\t5) Add Subject \n\t6) Delete Subject \n\t7) Link Tutor to Subject \n\t8) Show Subjects for a Tutor \n\t9) Show Tutors for a Subject \n\t0) Exit \n")
             match userin:
                 case "1":
                     self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User selected option 1')
@@ -93,7 +93,54 @@ class UserInterface(ApplicationBase):
 
                     results = self.DB.link_tutor_to_subject(tutor_id, subject_id)
                     print(f"Created {results} tutor-subject link(s).")
+                case "8":
+                    self._logger.log_debug(
+                        f'{inspect.currentframe().f_code.co_name}: User selected option 8 (Show Subjects for a Tutor)'
+                    )
 
+                    # Show tutors so user can see valid IDs
+                    print("\nCurrent Tutors:")
+                    tutors = self.DB.get_all_tutors()
+                    tutor_table = PrettyTable()
+                    tutor_table.field_names = ["Tutor ID", "First Name", "Last Name"]
+                    for row in tutors:
+                        tutor_table.add_row(row)
+                    print(tutor_table)
 
+                    tutor_id = input("Enter the Tutor ID to view their subjects: ")
+                    results = self.DB.get_subjects_for_tutor(tutor_id)
+
+                    subject_table = PrettyTable()
+                    subject_table.field_names = ["Subject ID", "Subject"]
+                    for row in results:
+                        subject_table.add_row(row)
+                    print("\nSubjects for selected tutor:")
+                    print(subject_table)
                 case "9":
+                    self._logger.log_debug(
+                        f'{inspect.currentframe().f_code.co_name}: User selected option 9 (Show Tutors for a Subject)'
+                    )
+
+                    # Show subjects so user can see valid IDs
+                    print("\nCurrent Subjects:")
+                    subjects = self.DB.get_all_subjects()
+                    subject_table = PrettyTable()
+                    subject_table.field_names = ["Subject ID", "Subject"]
+                    for row in subjects:
+                        subject_table.add_row(row)
+                    print(subject_table)
+
+                    subject_id = input("Enter the Subject ID to view its tutors: ")
+                    results = self.DB.get_tutors_for_subject(subject_id)
+
+                    tutor_table = PrettyTable()
+                    tutor_table.field_names = ["Tutor ID", "First Name", "Last Name"]
+                    for row in results:
+                        tutor_table.add_row(row)
+                    print("\nTutors for selected subject:")
+                    print(tutor_table)
+
+
+
+                case "0":
                     break

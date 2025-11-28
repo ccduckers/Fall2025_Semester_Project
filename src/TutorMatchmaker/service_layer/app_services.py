@@ -64,6 +64,23 @@ class AppServices(ApplicationBase):
         results = self.DB.linktutorsubject(subject_id, tutor_id)
         return results
     
+    def get_subjects_for_tutor(self, tutor_id) -> list:
+        """Return all subjects for a given tutor."""
+        self._logger.log_debug(
+            f'{inspect.currentframe().f_code.co_name}: Getting subjects for tutor {tutor_id}.'
+        )
+        results = self.DB.getsubjectsfortutor(tutor_id)
+        return results
+
+    def get_tutors_for_subject(self, subject_id) -> list:
+        """Return all tutors for a given subject."""
+        self._logger.log_debug(
+            f'{inspect.currentframe().f_code.co_name}: Getting tutors for subject {subject_id}.'
+        )
+        results = self.DB.gettutorsforsubject(subject_id)
+        return results
+
     
+
 
 
