@@ -55,5 +55,15 @@ class AppServices(ApplicationBase):
         )
         results = self.DB.deletesubject(subject_id)
         return results
+    
+    def link_tutor_to_subject(self, tutor_id, subject_id) -> list:
+        """Link a tutor to a subject."""
+        self._logger.log_debug(
+            f'{inspect.currentframe().f_code.co_name}: Linking tutor {tutor_id} to subject {subject_id}.'
+        )
+        results = self.DB.linktutorsubject(subject_id, tutor_id)
+        return results
+    
+    
 
 

@@ -38,6 +38,8 @@ class MySQLPersistenceWrapper(ApplicationBase):
 		self.INSERT_TUTOR = f'INSERT INTO Tutor(FirstName, LastName) VALUES (%s, %s);'
 		self.DELETE_TUTOR = f'DELETE FROM Tutor WHERE idTutors = %s;'
 
+		self.INSERT_TUTOR_SUBJECT = f'INSERT INTO Subject_has_Tutors (idSubject, idTutors) VALUES (%s, %s);'
+
 		self.INSERT_SUBJECT = f'INSERT INTO Subject(Subject) VALUES (%s);'
 		self.DELETE_SUBJECT = f'DELETE FROM Subject WHERE idSubject = %s;'
 
@@ -194,7 +196,33 @@ class MySQLPersistenceWrapper(ApplicationBase):
             )
 			return 
 
-
+	def linktutorsubject(self, subject_id, tutor_id):
+		"""Create a link between a subject and a tutor."""
+		self._logger.log_debug(
+            f'{inspect.currentframe().f_code.co_name}: Linking tutor {tutor_id} to subject {subject_id}'
+        )
+		try:
+			self._logger.log_debug(
+                f'{inspect.currentframe().f_code.co_name}: Running query: {self.INSERT_TUTOR_SUBJECT}'
+            )
+			connection = self._connection_pool.get_connection()
+			db_cursor = connection.cursor(dictionary=False)
+			db_cursor.execute(self.INSERT_TUTOR_SUBJECT, (subject_id, tutor_id))
+			results = db_cursor.rowcount
+			connection.commit()
+			db_cursor.close()
+			connection.close()
+			return results
+		except connector.Error as err:
+			self._logger.log_error(
+                f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
+            )
+			return
+		except Exception as e:
+			self._logger.log_error(
+                f'{inspect.currentframe().f_code.co_name}: General error: {e}'
+            )
+			return
 
 
 
