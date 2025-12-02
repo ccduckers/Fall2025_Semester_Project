@@ -13,11 +13,11 @@
 		},
 		"connection":{
 			"config":{
-				"database": "StudenTutoringMatchmaker",
-				"user": "root",
-				"password": "yellow",
+				"database": "studentutoringmatchmaker",
+				"user": "chrisduckers",
+				"password": "",
 				"host": "localhost",
-				"port": 3306
+				"port": 8889
 			}
 		}
 	}
