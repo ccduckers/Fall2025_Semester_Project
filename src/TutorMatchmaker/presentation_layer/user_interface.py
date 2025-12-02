@@ -1,10 +1,11 @@
 """Implements the applicatin user interface."""
 
-from prettytable import PrettyTable;
+
 from TutorMatchmaker.application_base import ApplicationBase
 from TutorMatchmaker.service_layer.app_services import AppServices
 import inspect
 import json
+from prettytable import PrettyTable
 
 #graphical interface for user to interact with
 class UserInterface(ApplicationBase):
@@ -15,7 +16,7 @@ class UserInterface(ApplicationBase):
         self.META = config["meta"] # initialize attribute "META" to the value associated with the "meta" key from the config argument
         super().__init__(subclass_name=self.__class__.__name__, # initialize instance of parent class "ApplicationBase" 
 				   logfile_prefix_name=self.META["log_prefix"])
-        self.DB = AppServices(config) # initialize attribute "DB" as an instance of "AppServices"
+        self.app_services = AppServices(config) # initialize attribute "DB" as an instance of "AppServices"
         self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}:It works!') # prints logs to the console
 
 
@@ -29,7 +30,7 @@ class UserInterface(ApplicationBase):
             match userin:
                 case "1":
                     self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User selected option 1')
-                    results = self.DB.get_all_tutors()
+                    results = self.app_services.get_all_tutors()
                     table = PrettyTable()
                     table.field_names = ["Tutor ID","First Name","Last Name",]
                     for row in results:
@@ -38,13 +39,13 @@ class UserInterface(ApplicationBase):
                 case "2":
                     addFname = input("Enter a First name: ")
                     addLname = input("Enter a Last name: ")
-                    results=self.DB.insert_tutor(addFname, addLname)
+                    results=self.app_services.insert_tutor(addFname, addLname)
                 case "3":
                     deleteID = input("Enter ID to delete")
-                    results=self.DB.delete_tutor(deleteID)
+                    results=self.app_services.delete_tutor(deleteID)
                 case "4":
                     self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User selected option 4 (View Subjects)')
-                    results = self.DB.get_all_subjects()
+                    results = self.app_services.get_all_subjects()
                     table = PrettyTable()
                     table.field_names = ["Subject ID", "Subject"]
                     for row in results:
@@ -55,14 +56,14 @@ class UserInterface(ApplicationBase):
                         f'{inspect.currentframe().f_code.co_name}: User selected option 5 (Add Subject)'
                     )
                     subject_name = input("Enter a subject name: ")
-                    results = self.DB.insert_subject(subject_name)
+                    results = self.app_services.insert_subject(subject_name)
                     print(f"Inserted {results} subject record(s).")
                 case "6":
                     self._logger.log_debug(
                         f'{inspect.currentframe().f_code.co_name}: User selected option 6 (Delete Subject)'
                     )
                     subject_id = input("Enter Subject ID to delete: ")
-                    results = self.DB.delete_subject(subject_id)
+                    results = self.app_services.delete_subject(subject_id)
                     print(f"Deleted {results} subject record(s).")
                 case "7":
                     self._logger.log_debug(
@@ -71,7 +72,7 @@ class UserInterface(ApplicationBase):
 
                     # Show tutors so user can pick an ID
                     print("\nCurrent Tutors:")
-                    tutors = self.DB.get_all_tutors()
+                    tutors = self.app_services.get_all_tutors()
                     tutor_table = PrettyTable()
                     tutor_table.field_names = ["Tutor ID", "First Name", "Last Name"]
                     for row in tutors:
@@ -80,7 +81,7 @@ class UserInterface(ApplicationBase):
 
                     # Show subjects so user can pick an ID
                     print("\nCurrent Subjects:")
-                    subjects = self.DB.get_all_subjects()
+                    subjects = self.app_services.get_all_subjects()
                     subject_table = PrettyTable()
                     subject_table.field_names = ["Subject ID", "Subject"]
                     for row in subjects:
@@ -91,7 +92,7 @@ class UserInterface(ApplicationBase):
                     tutor_id = input("Enter the Tutor ID to link: ")
                     subject_id = input("Enter the Subject ID to link: ")
 
-                    results = self.DB.link_tutor_to_subject(tutor_id, subject_id)
+                    results = self.app_services.link_tutor_to_subject(tutor_id, subject_id)
                     print(f"Created {results} tutor-subject link(s).")
                 case "8":
                     self._logger.log_debug(
@@ -100,7 +101,7 @@ class UserInterface(ApplicationBase):
 
                     # Show tutors so user can see valid IDs
                     print("\nCurrent Tutors:")
-                    tutors = self.DB.get_all_tutors()
+                    tutors = self.app_services.get_all_tutors()
                     tutor_table = PrettyTable()
                     tutor_table.field_names = ["Tutor ID", "First Name", "Last Name"]
                     for row in tutors:
@@ -108,7 +109,7 @@ class UserInterface(ApplicationBase):
                     print(tutor_table)
 
                     tutor_id = input("Enter the Tutor ID to view their subjects: ")
-                    results = self.DB.get_subjects_for_tutor(tutor_id)
+                    results = self.app_services.get_subjects_for_tutor(tutor_id)
 
                     subject_table = PrettyTable()
                     subject_table.field_names = ["Subject ID", "Subject"]
@@ -123,7 +124,7 @@ class UserInterface(ApplicationBase):
 
                     # Show subjects so user can see valid IDs
                     print("\nCurrent Subjects:")
-                    subjects = self.DB.get_all_subjects()
+                    subjects = self.app_services.get_all_subjects()
                     subject_table = PrettyTable()
                     subject_table.field_names = ["Subject ID", "Subject"]
                     for row in subjects:
@@ -131,7 +132,7 @@ class UserInterface(ApplicationBase):
                     print(subject_table)
 
                     subject_id = input("Enter the Subject ID to view its tutors: ")
-                    results = self.DB.get_tutors_for_subject(subject_id)
+                    results = self.app_services.get_tutors_for_subject(subject_id)
 
                     tutor_table = PrettyTable()
                     tutor_table.field_names = ["Tutor ID", "First Name", "Last Name"]
