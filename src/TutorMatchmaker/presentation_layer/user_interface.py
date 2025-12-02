@@ -26,7 +26,7 @@ class UserInterface(ApplicationBase):
         """Start main user interface."""
         self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User interface started!') # prints logs to the console
         while True:
-            userin = input("Enter a command option: \n\t1) View Tutors \n\t2) Add Tutor \n\t3) Delete Tutor \n\t4) View Subject \n\t5) Add Subject \n\t6) Delete Subject \n\t7) Link Tutor to Subject \n\t8) Show Subjects for a Tutor \n\t9) Show Tutors for a Subject \n\t0) Exit \n")
+            userin = input("Enter a command option: \n\t1) View Tutors \n\t2) Add Tutor \n\t3) Delete Tutor \n\t4) View Subject \n\t5) Add Subject \n\t6) Delete Subject \n\t7) Link Tutor to Subject \n\t8) Show Subjects for a Tutor \n\t9) Show Tutors for a Subject \n\t10) Remove Tutor-Subject Link \n\t0) Exit \n")
             match userin:
                 case "1":
                     self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: User selected option 1')
@@ -140,6 +140,36 @@ class UserInterface(ApplicationBase):
                         tutor_table.add_row(row)
                     print("\nTutors for selected subject:")
                     print(tutor_table)
+
+                case "10":
+                    self._logger.log_debug(
+                        f'{inspect.currentframe().f_code.co_name}: User selected option 10 (Remove Tutor-Subject Link)'
+                    )
+
+                    # Show tutors with IDs
+                    print("\nCurrent Tutors:")
+                    tutors = self.app_services.get_all_tutors()
+                    tutor_table = PrettyTable()
+                    tutor_table.field_names = ["Tutor ID", "First Name", "Last Name"]
+                    for row in tutors:
+                        tutor_table.add_row(row)
+                    print(tutor_table)
+
+                    # Show subjects with IDs
+                    print("\nCurrent Subjects:")
+                    subjects = self.app_services.get_all_subjects()
+                    subject_table = PrettyTable()
+                    subject_table.field_names = ["Subject ID", "Subject"]
+                    for row in subjects:
+                        subject_table.add_row(row)
+                    print(subject_table)
+
+                    tutor_id = input("Enter the Tutor ID to unlink: ")
+                    subject_id = input("Enter the Subject ID to unlink: ")
+
+                    results = self.app_services.unlink_tutor_from_subject(tutor_id, subject_id)
+                    print(f"Removed {results} tutor-subject link(s).")
+
 
 
 

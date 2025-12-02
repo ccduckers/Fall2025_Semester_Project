@@ -64,6 +64,15 @@ class AppServices(ApplicationBase):
         results = self.DB.linktutorsubject(subject_id, tutor_id)
         return results
     
+    def unlink_tutor_from_subject(self, tutor_id, subject_id) -> list:
+        """Remove the link between a tutor and a subject."""
+        self._logger.log_debug(
+            f'{inspect.currentframe().f_code.co_name}: Unlinking tutor {tutor_id} from subject {subject_id}.'
+        )
+        results = self.DB.unlinktutorsubject(subject_id, tutor_id)
+        return results
+
+    
     def get_subjects_for_tutor(self, tutor_id) -> list:
         """Return all subjects for a given tutor."""
         self._logger.log_debug(
