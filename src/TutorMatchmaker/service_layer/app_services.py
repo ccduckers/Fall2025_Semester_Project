@@ -89,6 +89,22 @@ class AppServices(ApplicationBase):
         results = self.DB.gettutorsforsubject(subject_id)
         return results
 
+    def update_tutor(self, tutor_id, firstname, lastname) -> list:    
+        """Update a tutor's first and last name."""
+        self._logger.log_debug(
+            f'{inspect.currentframe().f_code.co_name}: Updating tutor {tutor_id}.'
+        )
+        results = self.DB.updatetutor(tutor_id, firstname, lastname)
+        return results
+
+    def update_subject(self, subject_id, subject_name) -> list:
+        """Update a subject's name."""
+        self._logger.log_debug(
+            f'{inspect.currentframe().f_code.co_name}: Updating subject {subject_id}.'
+        )
+        results = self.DB.updatesubject(subject_id, subject_name)
+        return results
+
     
 
 

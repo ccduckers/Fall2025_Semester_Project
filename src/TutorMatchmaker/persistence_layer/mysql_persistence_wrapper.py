@@ -60,6 +60,8 @@ class MySQLPersistenceWrapper(ApplicationBase):
             WHERE sht.idSubject = %s;
         """
 
+		self.UPDATE_TUTOR = f'UPDATE Tutor SET FirstName = %s, LastName = %s WHERE idTutors = %s;'
+		self.UPDATE_SUBJECT = f'UPDATE Subject SET Subject = %s WHERE idSubject = %s;'
 
 
 
@@ -318,6 +320,63 @@ class MySQLPersistenceWrapper(ApplicationBase):
                 f'{inspect.currentframe().f_code.co_name}: General error: {e}'
             )
 			return
+
+	def updatetutor(self, tutor_id, firstname, lastname):
+		"""Update a tutor's first and last name."""
+		self._logger.log_debug(
+            f'{inspect.currentframe().f_code.co_name}: Updating tutor {tutor_id}'
+        )
+		try:
+			self._logger.log_debug(
+                f'{inspect.currentframe().f_code.co_name}: Running query: {self.UPDATE_TUTOR}'
+            )
+			connection = self._connection_pool.get_connection()
+			db_cursor = connection.cursor(dictionary=False)
+			db_cursor.execute(self.UPDATE_TUTOR, (firstname, lastname, tutor_id))
+			results = db_cursor.rowcount
+			connection.commit()
+			db_cursor.close()
+			connection.close()
+			return results
+		except connector.Error as err:
+			self._logger.log_error(
+                f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
+            )
+			return 
+		except Exception as e:
+			self._logger.log_error(
+                f'{inspect.currentframe().f_code.co_name}: General error: {e}'
+            )
+			return
+		
+	def updatesubject(self, subject_id, subject_name):
+		"""Update a subject's name."""
+		self._logger.log_debug(
+            f'{inspect.currentframe().f_code.co_name}: Updating subject {subject_id}'
+        )
+		try:
+			self._logger.log_debug(
+                f'{inspect.currentframe().f_code.co_name}: Running query: {self.UPDATE_SUBJECT}'
+            )
+			connection = self._connection_pool.get_connection()
+			db_cursor = connection.cursor(dictionary=False)
+			db_cursor.execute(self.UPDATE_SUBJECT, (subject_name, subject_id))
+			results = db_cursor.rowcount
+			connection.commit()
+			db_cursor.close()
+			connection.close()
+			return results
+		except connector.Error as err:
+			self._logger.log_error(
+                f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
+            )
+			return
+		except Exception as e:
+			self._logger.log_error(
+                f'{inspect.currentframe().f_code.co_name}: General error: {e}'
+            )
+			return 
+
 
 
 
