@@ -79,16 +79,20 @@ class MySQLPersistenceWrapper(ApplicationBase):
 	# MySQLPersistenceWrapper Methods
 
 	def getalltutors(self):
+		"""
+		Connects and establishes interface with database in order to query the SELECT_ALL_TUTORS command.
+		Queries and returns all tutors
+		"""
 		self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Getting all tutors')
 		try:
 			self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Running query: {self.SELECT_ALL_TUTORS}')
-			connection = self._connection_pool.get_connection()
-			db_cursor = connection.cursor(dictionary=False)
-			db_cursor.execute(self.SELECT_ALL_TUTORS, )
-			results = db_cursor.fetchall()
-			db_cursor.close()
-			connection.close()
-			return results
+			connection = self._connection_pool.get_connection() # connecting to the database
+			db_cursor = connection.cursor(dictionary=False) # creating an interface with the database
+			db_cursor.execute(self.SELECT_ALL_TUTORS, ) # querying the database interface with the SELECT_ALL_TUTORS command
+			results = db_cursor.fetchall() # storing query results
+			db_cursor.close() # closing DB interface
+			connection.close() # closing DB connection
+			return results # returning query results
 		except connector.Error as err:
 			self._logger.log_error(f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}')
 			return []
@@ -97,14 +101,17 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			return []
 	
 	def getallsubjects(self):
+		"""
+		Queries and returns all subjects
+		"""
 		self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Getting all subjects')
 		try:
 			self._logger.log_debug(
             	    f'{inspect.currentframe().f_code.co_name}: Running query: {self.SELECT_ALL_SUBJECTS}'
             )
-			connection = self._connection_pool.get_connection()
-			db_cursor = connection.cursor(dictionary=False)
-			db_cursor.execute(self.SELECT_ALL_SUBJECTS)
+			connection = self._connection_pool.get_connection() # connecting to the database
+			db_cursor = connection.cursor(dictionary=False) # creating an interface with the database
+			db_cursor.execute(self.SELECT_ALL_SUBJECTS) # querying the database interface with the SELECT_ALL_SUBJECTS command
 			results = db_cursor.fetchall()
 			db_cursor.close()
 			connection.close()
@@ -113,22 +120,25 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
             )
-			return 
+			return []
 		except Exception as e:
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: General error: {e}'
             )
-			return
+			return []
 
 		
 		
 	def inserttutor(self, firstname, lastname):
+		"""
+		Updates the database with firstname and lastname, and the database assigns a unique tutor ID
+		"""
 		self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Inserting a tutor')
 		try:
 			self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Running query: {self.INSERT_TUTOR}')
-			connection = self._connection_pool.get_connection()
-			db_cursor = connection.cursor(dictionary=False)
-			db_cursor.execute(self.INSERT_TUTOR,(firstname, lastname) )
+			connection = self._connection_pool.get_connection() # connecting to the database
+			db_cursor = connection.cursor(dictionary=False) # creating an interface with the database
+			db_cursor.execute(self.INSERT_TUTOR,(firstname, lastname) ) # querying the database interface with the INSERT_TUTOR command with the firstname and lastname parameters
 			results = db_cursor.rowcount
 			connection.commit()
 			db_cursor.close()
@@ -142,12 +152,15 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			return []
 		
 	def deletetutor(self, idTutor):
+		"""
+		Deletes a tutor from the database using the idTutor parameter
+		"""
 		self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Deleting a tutor')
 		try:
 			self._logger.log_debug(f'{inspect.currentframe().f_code.co_name}: Running query: {self.DELETE_TUTOR}')
-			connection = self._connection_pool.get_connection()
-			db_cursor = connection.cursor(dictionary=False)
-			db_cursor.execute(self.DELETE_TUTOR,(idTutor,) )
+			connection = self._connection_pool.get_connection() # connecting to the database
+			db_cursor = connection.cursor(dictionary=False) # creating an interface with the database
+			db_cursor.execute(self.DELETE_TUTOR,(idTutor,) ) # querying the database interface with the DELETE_TUTOR command with the idTutor parameter
 			results = db_cursor.rowcount
 			connection.commit()
 			db_cursor.close()
@@ -161,7 +174,9 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			return []
 
 	def insertsubject(self, subject_name):
-		"""Insert a new subject."""
+		"""
+		Insert a new subject using the subject_name parameter
+		"""
 		self._logger.log_debug(
             f'{inspect.currentframe().f_code.co_name}: Inserting a subject'
 		)
@@ -169,9 +184,9 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self._logger.log_debug(
                 f'{inspect.currentframe().f_code.co_name}: Running query: {self.INSERT_SUBJECT}'
             )
-			connection = self._connection_pool.get_connection()
-			db_cursor = connection.cursor(dictionary=False)
-			db_cursor.execute(self.INSERT_SUBJECT, (subject_name,))
+			connection = self._connection_pool.get_connection() # connecting to the database
+			db_cursor = connection.cursor(dictionary=False) # creating an interface with the database
+			db_cursor.execute(self.INSERT_SUBJECT, (subject_name,)) # querying the database interface with the INSERT_SUBJECT command with the subject_name parameter
 			results = db_cursor.rowcount
 			connection.commit()
 			db_cursor.close()
@@ -181,15 +196,17 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
             )
-			return
+			return []
 		except Exception as e:
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: General error: {e}'
             )
-			return
+			return []
 		
 	def deletesubject(self, subject_id):
-		"""Delete a subject by id."""
+		"""
+		Delete a subject by subject_id parameter
+		"""
 		self._logger.log_debug(
             f'{inspect.currentframe().f_code.co_name}: Deleting subject {subject_id}'
         )
@@ -197,9 +214,9 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self._logger.log_debug(
                 f'{inspect.currentframe().f_code.co_name}: Running query: {self.DELETE_SUBJECT}'
             )
-			connection = self._connection_pool.get_connection()
-			db_cursor = connection.cursor(dictionary=False)
-			db_cursor.execute(self.DELETE_SUBJECT, (subject_id,))
+			connection = self._connection_pool.get_connection() # connecting to the database
+			db_cursor = connection.cursor(dictionary=False) # creating an interface with the database
+			db_cursor.execute(self.DELETE_SUBJECT, (subject_id,)) # querying the database interface with the DELETE_SUBJECTS command with the subject_id parameter
 			results = db_cursor.rowcount
 			connection.commit()
 			db_cursor.close()
@@ -209,15 +226,17 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
             )
-			return
+			return []
 		except Exception as e:
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: General error: {e}'
             )
-			return 
+			return []
 
 	def linktutorsubject(self, subject_id, tutor_id):
-		"""Create a link between a subject and a tutor."""
+		"""
+		Create a link between a subject and a tutor using the subject_id and tutor_id parameters.
+		"""
 		self._logger.log_debug(
             f'{inspect.currentframe().f_code.co_name}: Linking tutor {tutor_id} to subject {subject_id}'
         )
@@ -225,9 +244,9 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self._logger.log_debug(
                 f'{inspect.currentframe().f_code.co_name}: Running query: {self.INSERT_TUTOR_SUBJECT}'
             )
-			connection = self._connection_pool.get_connection()
-			db_cursor = connection.cursor(dictionary=False)
-			db_cursor.execute(self.INSERT_TUTOR_SUBJECT, (subject_id, tutor_id))
+			connection = self._connection_pool.get_connection() # connecting to the database
+			db_cursor = connection.cursor(dictionary=False) # creating an interface with the database
+			db_cursor.execute(self.INSERT_TUTOR_SUBJECT, (subject_id, tutor_id)) # querying the database interface with the INSERT_TUTOR_SUBJECT command with the subject_id and tutor_id parameters
 			results = db_cursor.rowcount
 			connection.commit()
 			db_cursor.close()
@@ -237,15 +256,17 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
             )
-			return
+			return []
 		except Exception as e:
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: General error: {e}'
             )
-			return
+			return []
 		
 	def unlinktutorsubject(self, subject_id, tutor_id):
-		"""Remove the link between a subject and a tutor."""
+		"""
+		Remove the link between a subject and a tutor using the subject_id and tutor_id parameters
+		"""
 		self._logger.log_debug(
             f'{inspect.currentframe().f_code.co_name}: Unlinking tutor {tutor_id} from subject {subject_id}'
         )
@@ -253,9 +274,9 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self._logger.log_debug(
                 f'{inspect.currentframe().f_code.co_name}: Running query: {self.DELETE_TUTOR_SUBJECT}'
             )
-			connection = self._connection_pool.get_connection()
-			db_cursor = connection.cursor(dictionary=False)
-			db_cursor.execute(self.DELETE_TUTOR_SUBJECT, (subject_id, tutor_id))
+			connection = self._connection_pool.get_connection() # connecting to the database
+			db_cursor = connection.cursor(dictionary=False) # creating an interface with the database
+			db_cursor.execute(self.DELETE_TUTOR_SUBJECT, (subject_id, tutor_id)) # querying the database interface with the DELETE_ALL_TUTORS command using the subject_id and tutor_id parameters
 			results = db_cursor.rowcount
 			connection.commit()
 			db_cursor.close()
@@ -265,23 +286,25 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
             )
-			return
+			return []
 		except Exception as e:
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: General error: {e}'
             )
-			return
+			return []
 
 		
 	def getsubjectsfortutor(self, tutor_id):
-		"""Return all subjects associated with a given tutor id."""
+		"""
+		Return all subjects associated with a given tutor id
+		"""
 		self._logger.log_debug(
             f'{inspect.currentframe().f_code.co_name}: Getting subjects for tutor {tutor_id}'
         )
 		try:
-			connection = self._connection_pool.get_connection()
-			db_cursor = connection.cursor(dictionary=False)
-			db_cursor.execute(self.SELECT_SUBJECTS_FOR_TUTOR, (tutor_id,))
+			connection = self._connection_pool.get_connection() # connecting to the database
+			db_cursor = connection.cursor(dictionary=False) # creating an interface with the database
+			db_cursor.execute(self.SELECT_SUBJECTS_FOR_TUTOR, (tutor_id,)) # querying the database interface with the SELECT_SUBJECTS_FOR_TUTOR command with the tutor_id parameter
 			results = db_cursor.fetchall()
 			db_cursor.close()
 			connection.close()
@@ -290,22 +313,24 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
             )
-			return 
+			return []
 		except Exception as e:
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: General error: {e}'
             )
-			return
+			return []
 		
 	def gettutorsforsubject(self, subject_id):
-		"""Return all tutors associated with a given subject id."""
+		"""
+		Return all tutors associated with a given subject id
+		"""
 		self._logger.log_debug(
             f'{inspect.currentframe().f_code.co_name}: Getting tutors for subject {subject_id}'
         )
 		try:
-			connection = self._connection_pool.get_connection()
-			db_cursor = connection.cursor(dictionary=False)
-			db_cursor.execute(self.SELECT_TUTORS_FOR_SUBJECT, (subject_id,))
+			connection = self._connection_pool.get_connection() # connecting to the database
+			db_cursor = connection.cursor(dictionary=False) # creating an interface with the database
+			db_cursor.execute(self.SELECT_TUTORS_FOR_SUBJECT, (subject_id,)) # querying the database interface with the SELECT_TUTORS_FOR_SUBJECT command with the subject_id parameter
 			results = db_cursor.fetchall()
 			db_cursor.close()
 			connection.close()
@@ -314,15 +339,17 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
             )
-			return 
+			return []
 		except Exception as e:
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: General error: {e}'
             )
-			return
+			return []
 
 	def updatetutor(self, tutor_id, firstname, lastname):
-		"""Update a tutor's first and last name."""
+		"""
+		Update a tutor's first and last name using the firstname, lastname, and tutor_id parameters
+		"""
 		self._logger.log_debug(
             f'{inspect.currentframe().f_code.co_name}: Updating tutor {tutor_id}'
         )
@@ -330,9 +357,9 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self._logger.log_debug(
                 f'{inspect.currentframe().f_code.co_name}: Running query: {self.UPDATE_TUTOR}'
             )
-			connection = self._connection_pool.get_connection()
-			db_cursor = connection.cursor(dictionary=False)
-			db_cursor.execute(self.UPDATE_TUTOR, (firstname, lastname, tutor_id))
+			connection = self._connection_pool.get_connection() # connecting to the database
+			db_cursor = connection.cursor(dictionary=False) # creating an interface with the database
+			db_cursor.execute(self.UPDATE_TUTOR, (firstname, lastname, tutor_id)) # querying the database interface with the UPDATE_TUTOR command with the firstname, lastname, and tutor_id parameters
 			results = db_cursor.rowcount
 			connection.commit()
 			db_cursor.close()
@@ -342,15 +369,17 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
             )
-			return 
+			return []
 		except Exception as e:
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: General error: {e}'
             )
-			return
+			return []
 		
 	def updatesubject(self, subject_id, subject_name):
-		"""Update a subject's name."""
+		"""
+		Update a subject's name using subject_name and subject_id parameters
+		"""
 		self._logger.log_debug(
             f'{inspect.currentframe().f_code.co_name}: Updating subject {subject_id}'
         )
@@ -358,9 +387,9 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self._logger.log_debug(
                 f'{inspect.currentframe().f_code.co_name}: Running query: {self.UPDATE_SUBJECT}'
             )
-			connection = self._connection_pool.get_connection()
-			db_cursor = connection.cursor(dictionary=False)
-			db_cursor.execute(self.UPDATE_SUBJECT, (subject_name, subject_id))
+			connection = self._connection_pool.get_connection() # connecting to the database
+			db_cursor = connection.cursor(dictionary=False) # creating an interface with the database
+			db_cursor.execute(self.UPDATE_SUBJECT, (subject_name, subject_id)) # querying the database interface with the UPDATE_SUBJECT command with the subject_name and subject_id parameters
 			results = db_cursor.rowcount
 			connection.commit()
 			db_cursor.close()
@@ -370,12 +399,12 @@ class MySQLPersistenceWrapper(ApplicationBase):
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: MySQL error: {err}'
             )
-			return
+			return []
 		except Exception as e:
 			self._logger.log_error(
                 f'{inspect.currentframe().f_code.co_name}: General error: {e}'
             )
-			return 
+			return []
 
 
 
